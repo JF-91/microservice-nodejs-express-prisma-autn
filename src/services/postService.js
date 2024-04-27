@@ -1,6 +1,6 @@
 import { request, response } from "express";
 import { PrismaClient } from "@prisma/client";
-import postRepository from "../repository/postRepository";
+import postRepository from "../repository/postRepository.js";
 
 class PostService {
     constructor () {
@@ -13,19 +13,51 @@ class PostService {
         this.limitPosts = this.limitPosts.bind(this);
     }
 
-    async limitPosts(reuest = request, limit = 10, offset = 0) {
+    async limitPosts(reuest = request) {
         const { limit, offset } = request.query;
         return this.post.findMany({
-            limit: Number(limit),
-            offset: Number(offset),
+            limit: limit === undefined ? 10 : parseInt(limit),
+            offset: offset === undefined ? 0 : parseInt(offset),
         });
     }
 
-    setPost(post) {
-        return this.post.create({
-            data: post,
+    async filerPosts(request = request) {
+        const { title } = request.query;
+        return this.post.findMany({
+            where: {
+                title: {
+                    contains: title,
+                },
+            },
         });
     }
+
+    async getPosts() {
+        return this.repository.getPosts();
+    }
+
+    async getPostById(id) {
+        return this.repository.getPostById(id);
+    }
+
+    async createPost(post) {
+        return this.repository.createPost(post);
+    }
+
+    async updatePost(id, post) {
+        return this.repository.updatePost(id, post);
+    }
+
+    async deletePost(id) {
+        return this.repository.deletePost(id);
+    }
+
+    async getPostsByTitle(title) {
+        return this.repository.getByName(title);
+    }
+
+
+
 }
 
 export default new PostService();

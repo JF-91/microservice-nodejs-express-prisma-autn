@@ -1,5 +1,6 @@
 import { request, response } from "express";
-
+import postService from "../services/postService.js";
+import errorHandler from "../services/errorHandler.js";
 
 const postController = {
     getPosts: async (request, response) => {
@@ -7,38 +8,31 @@ const postController = {
             const posts = await postService.getPosts();
             response.status(200).json(posts);
         } catch (error) {
-            response.status(500).json({ message: error.message });
+            errorHandler.handle(error)
         }
     },
 
     getPostById: async (request, response) => {
         try {
-            const { id } = request.params;
-            const post = await postService.getPostById(id);
-            response.status(200).json(post);
+           postService.getPostById(request.params.id)
         } catch (error) {
-            response.status(500).json({ message: error.message });
+            errorHandler.handle(error)
         }
     },
 
     updatePost: async (request, response) => {
         try {
-            const { id } = request.params;
-            const post = request.body;
-            const updatedPost = await postService.updatePost(id, post);
-            response.status(200).json(updatedPost);
+           postService.updatePost(request.params.id, request.body)
         } catch (error) {
-            response.status(500).json({ message: error.message });
+            errorHandler.handle(error)
         }
     },
 
     deletePost: async (request, response) => {
         try {
-            const { id } = request.params;
-            await postService.deletePost(id);
-            response.status(200).json({ message: "Post deleted successfully" });
+            postService.deletePost(request.params.id)
         } catch (error) {
-            response.status(500).json({ message: error.message });
+            errorHandler.handle(error)
         }
     },
 }
