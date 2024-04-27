@@ -12,6 +12,7 @@ const AuthController = {
             errorHandler.handle(error);
         }
     },
+    
     logout: (request, response) => {
         try {
             authService.logout(request).then((result) => {

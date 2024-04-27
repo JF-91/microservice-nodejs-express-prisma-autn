@@ -17,29 +17,33 @@ class JwtService {
     return this.jwt.verify(token, this.config.getJwtKey());
   }
 
-    decodeToken(token) {
-        return this.jwt.decode(token);
-    }
+  destroyToken(token) {
+    return this.jwt.destroy(token);
+  }
 
-    getTokenFromHeader(req) {
-        return req.headers.authorization.split(' ')[1];
-    }
+  decodeToken(token) {
+      return this.jwt.decode(token);
+  }
 
-    getTokenFromCookie(req) {
-        return req.cookies.jwt;
-    }
+  getTokenFromHeader(req) {
+      return req.headers.authorization.split(' ')[1];
+  }
 
-    clearTokenCookie(res) {
-        res.clearCookie('jwt');
-    }
+  getTokenFromCookie(req) {
+      return req.cookies.jwt;
+  }
 
-    setTokenHeader(res, token) {
-        res.set('Authorization', `Bearer ${token}`);
-    }
+  clearTokenCookie(res) {
+      res.clearCookie('jwt');
+  }
 
-    clearTokenHeader(res) {
-        res.removeHeader('Authorization');
-    }
+  setTokenHeader(res, token) {
+      res.set('Authorization', `Bearer ${token}`);
+  }
+
+  clearTokenHeader(res) {
+      res.removeHeader('Authorization');
+  }
 
 }
 

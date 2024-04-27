@@ -38,8 +38,9 @@ class AuthRepository {
     }
 
     async logout(request = request) {
+        jwtService.decodeToken(request.headers.authorization);
         return {
-            message: "Logout successful",
+            message: "Logged out",
             status: 200,
         };
     }
