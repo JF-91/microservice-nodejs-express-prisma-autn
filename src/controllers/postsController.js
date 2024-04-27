@@ -1,6 +1,6 @@
 import { request, response } from "express";
 import postService from "../services/postService.js";
-import errorHandler from "../services/errorHandler.js";
+import errorHandler from "../helpers/errorHandler.js";
 
 const postController = {
     getPosts: async (request, response) => {

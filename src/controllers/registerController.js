@@ -1,9 +1,16 @@
 import { request, response } from "express";
+import registerService from "../services/registerService.js";
+import errorHandler from "../helpers/errorHandler.js";
 
 const registerController = {
     register: (request, response) => {
-        console.log("Hello World");
-        response.json({ message: "Hello World" });
+        try {
+            registerService.register(request).then((result) => {
+                response.status(result.status).json(result);
+            });
+        } catch (error) {
+            errorHandler.handle(error);
+        }
     },
 };
 

@@ -1,6 +1,7 @@
 import Config from "./config/config.js";
 import express from "express";
 import AppRouter from "./routes/index.js";
+import cors from "cors";
 
 class App {
     constructor() {
@@ -12,6 +13,7 @@ class App {
     init() {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(cors());
         this.routes();
         this.listen();
     }

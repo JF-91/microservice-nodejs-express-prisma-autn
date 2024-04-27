@@ -35,6 +35,10 @@ class Config {
        }
     }
 
+    getJwtKey() {
+        return process.env.JWT_KEY;
+    }
+
     async disconnectDb() {
         try {
            if (this.prisma.$isConnected) {
