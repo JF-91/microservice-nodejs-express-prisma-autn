@@ -8,31 +8,34 @@ const postController = {
             const posts = await postService.getPosts();
             response.status(200).json(posts);
         } catch (error) {
-            errorHandler.handle(error)
+            errorHandler.handle(error, response)
         }
     },
 
     getPostById: async (request, response) => {
         try {
-           postService.getPostById(request.params.id)
+            const post = await postService.getPostById(request.params.id)
+            response.status(200).json(post);
         } catch (error) {
-            errorHandler.handle(error)
+            errorHandler.handle(error, response)
         }
     },
 
     updatePost: async (request, response) => {
         try {
-           postService.updatePost(request.params.id, request.body)
+            const post = await postService.updatePost(request.params.id, request.body)
+            response.status(200).json(post);
         } catch (error) {
-            errorHandler.handle(error)
+            errorHandler.handle(error, response)
         }
     },
 
     deletePost: async (request, response) => {
         try {
-            postService.deletePost(request.params.id)
+            await postService.deletePost(request.params.id)
+            response.status(204).send();
         } catch (error) {
-            errorHandler.handle(error)
+            errorHandler.handle(error, response)
         }
     },
 }

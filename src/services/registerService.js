@@ -10,11 +10,12 @@ class RegisterService {
         this.bcrypt = bcrypt;
     }
 
-    async register(request = request) {
+    async register(request) {
         const { name, email, password } = request.body;
         const user = await this.prisma.user.findUnique({
             where: {
                 email: email,
+            
             },
         });
 
@@ -27,10 +28,12 @@ class RegisterService {
 
         const hashedPassword = await this.bcrypt.hash(password, 10);
 
+    
+
         const newUser = await this.prisma.user.create({
             data: {
-                name: name,
-                email: email,
+                name,
+                email,
                 password: hashedPassword,
             },
         });
@@ -42,6 +45,29 @@ class RegisterService {
             user: newUser,
         };
     }
+
+    userExists(email) {
+        if (this.prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+        })) {
+            return true;
+        }
+
+        return false;
+    }
+
+   validateRegister(request) {
+        const { name, email, password } = request.body;
+
+        if (!name || !email || !password) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
 
 export default new RegisterService();

@@ -1,15 +1,24 @@
-import { request, response } from "express";
+
 import registerService from "../services/registerService.js";
 import errorHandler from "../helpers/errorHandler.js";
 
 const registerController = {
-    register: (request, response) => {
+    register:  async(request, response) => {
         try {
-            registerService.register(request).then((result) => {
-                response.status(result.status).json(result);
-            });
+
+            if (!registerService.validateRegister(request)) {
+                return response.status(400).json({ message: "Invalid data" });
+            }
+            
+            if (!registerService.userExists(request.body.email)) {
+                return response.status(409).json({ message: "User already exists" });
+            }
+
+            const result = await registerService.register(request);
+            return response.status(200).json(result);
+            
         } catch (error) {
-            errorHandler.handle(error);
+            return errorHandler.handle(error, response);
         }
     },
 };

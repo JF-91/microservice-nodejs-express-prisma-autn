@@ -1,12 +1,17 @@
-import { response } from "express";
+
 
 class ErrorHandler {
 
 
-    handle(error, request, response, next) {
+    handle(error, response) {
+
         const { name } = error;
-        const errorType = this.errorTypes[name];
-        errorType(request, response, next);
+
+        if (this.errorTypes[name]) {
+            return this.errorTypes[name](error, response);
+        }
+
+        return this.internalServerError(error, response);
     }
 
    errorTypes = {
@@ -21,70 +26,40 @@ class ErrorHandler {
         "NotImplementedError": this.notImplemented,
     }
 
-    notFound(request, response, next) {
-        const error = new Error("Not found");
-        error.status = 404;
-        next(error);
+    badRequest(error, response) {
+        return response.status(400).json({ message: error.message });
     }
 
-    methodNotAllowed(request, response, next) {
-        const error = new Error("Method not allowed");
-        error.status = 405;
-        next(error);
+    unauthorized(error, response) {
+        return response.status(401).json({ message: error.message });
     }
 
-    badRequest(request, response, next) {
-        const error = new Error("Bad request");
-        error.status = 400;
-        next(error);
+    forbidden(error, response) {
+        return response.status(403).json({ message: error.message });
     }
 
-    unauthorized(request, response, next) {
-        const error = new Error("Unauthorized");
-        error.status = 401;
-        next(error);
+    conflict(error, response) {
+        return response.status(409).json({ message: error.message });
     }
 
-    forbidden(request, response, next) {
-        const error = new Error("Forbidden");
-        error.status = 403;
-        next(error);
+    internalServerError(error, response) {
+        return response.status(500).json({ message: error.message });
     }
 
-    conflict(request, response, next) {
-        const error = new Error("Conflict");
-        error.status = 409;
-        next(error);
+    serviceUnavailable(error, response) {
+        return response.status(503).json({ message: error.message });
     }
 
-    internalServerError(request, response, next) {
-        const error = new Error("Internal server error");
-        error.status = 500;
-        next(error);
+    gatewayTimeout(error, response) {
+        return response.status(504).json({ message: error.message });
     }
 
-    serviceUnavailable(request, response, next) {
-        const error = new Error("Service unavailable");
-        error.status = 503;
-        next(error);
+    tooManyRequests(error, response) {
+        return response.status(429).json({ message: error.message });
     }
 
-    gatewayTimeout(request, response, next) {
-        const error = new Error("Gateway timeout");
-        error.status = 504;
-        next(error);
-    }
-
-    tooManyRequests(request, response, next) {
-        const error = new Error("Too many requests");
-        error.status = 429;
-        next(error);
-    }
-
-    notImplemented(request, response, next) {
-        const error = new Error("Not implemented");
-        error.status = 501;
-        next(error);
+    notImplemented(error, response) {
+        return response.status(501).json({ message: error.message });
     }
 }
 
